@@ -34,7 +34,8 @@ var  x=0
    , rMargin=0
    , lasth=8
    , rtl=false
-   , lineWidth=0.57/this.internal.scaleFactor;
+   , lineWidth=0.57
+   , rowHeight=6;
  
 
 jsPDFAPI.ln = function(h) {
@@ -94,14 +95,14 @@ jsPDFAPI.cell = function(args) {
     }
 
     if (a.fill == 1 || a.border == 1) {
-        let style = [];
+        var style = [];
         if (a.fill == 1) {
             style.push('F');
         }
         if (a.border == 1) {
             style.push('D')
         }
-        let xk = x;
+        var xk = x;
         if(rtl) {
             xk = x - a.w;
         }
@@ -111,15 +112,16 @@ jsPDFAPI.cell = function(args) {
     if (a.border !== 0) {
 
         if (typeof(a.border) == "string") {
-            a.border = { a.border: 1 };
+            a.border = {};
+            a[a.border] = 1;
         }
 
-        let bcn = '';
+        var bcn = '';
         for (bcn in a.border) {
-            let bci = '';
-            this.setLineWidth(lineWidth * a.border[bcn]);
+            var bci = '';
+            this.setLineWidth(lineWidth/k * a.border[bcn]);
             for (bci in bcn) {
-                let cpos = ({'T':0,'R':1,'B':2,'L':3})[bci];
+                var cpos = ({'T':0,'R':1,'B':2,'L':3})[bci];
                 this.line(x+(((cpos+1)%4)>1?a.w:0)
                         , y+(((cpos+0)%4)>1?a.h:0)
                         , x+(((cpos+2)%4)>1?a.w:0)
@@ -127,12 +129,30 @@ jsPDFAPI.cell = function(args) {
                 )
             }
         }
-        this.setLineWidth(lineWidth);
+        this.setLineWidth(lineWidth/k);
     }
 
 	return this 
 }
 
+jsPDFAPI.dataTable = function(columns, data, options) {
+
+    var that = this;
+
+    columns.forEach(function(col) {
+        var c = {txt:col.title};
+        c.prototype = col;
+        that.cell(c);
+    });
+
+    data.forEach(function(row) {
+        columns.forEach(function(col) {
+            var c = {};
+
+        });
+    });
+
+}
 
 
 })(jsPDF.API)

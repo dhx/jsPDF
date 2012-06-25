@@ -330,7 +330,6 @@ asyncTest('014_addImage', function() {
 	})
 })
 
-// handcrafted tests
 asyncTest('015_addPdfObj', function() {
 
 	//QUnit.stop()
@@ -358,6 +357,51 @@ asyncTest('015_addPdfObj', function() {
 			, removeMinorDiffs( expectedtext )
 		)
 		QUnit.start()
+		//stop()
+	})
+})
+
+asyncTest('016_addPdfObj', function() {
+
+	//QUnit.stop()
+	require(
+		['text!016_table.pdf']
+	).then(function(expectedtext){
+		QUnit.expect(2);
+
+        columns = [
+            {'title':'col1', 'value':'c1', 'align':'R', 'width':7, 'border':{'L':2, 'TRB':1}}
+           ,{'title':'col2', 'value':'c2', 'align':'C', 'width':10, 'border':1}
+           ,{'title':'col3', 'value':'c3', 'align':'L', 'width':0, 'border':{'R':2, 'TLB':1}}
+        ];
+
+        data = [
+             {c1:"ABC", c2:"DEF", c3:"GHI"}
+            ,{c1:"JKL", c2:"MNO", c3:"PQR"}
+            ,{c1:"STU", c2:"VWX", c3:"YZ_"}   
+        ];
+
+        options = {};
+
+		var pdf = jsPDF();
+
+		pdf.dataTable(columns,data,options);
+
+		QUnit.equal(
+			// just testing if it does not blow up.
+			pdf.output('datauristring') !== ''
+			, true
+		);
+
+		pdf = jsPDF();
+
+		pdf.dataTable(columns,data,options);
+
+		QUnit.equal(
+			removeMinorDiffs( pdf.output() )
+			, removeMinorDiffs( expectedtext )
+		);
+		QUnit.start();
 		//stop()
 	})
 })
