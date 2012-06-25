@@ -330,6 +330,38 @@ asyncTest('014_addImage', function() {
 	})
 })
 
+// handcrafted tests
+asyncTest('015_addPdfObj', function() {
+
+	//QUnit.stop()
+	require(
+		['text!015_addPdfObj.pdfobj', 'text!015_addPdfObj.pdf']
+	).then(function(pdfObj, expectedtext){
+		QUnit.expect(2)
+
+		var pdf = jsPDF()
+
+		pdf.addPdfObj(pdfObj, 1, 1, 1, 1)
+
+		QUnit.equal(
+			// just testing if it does not blow up.
+			pdf.output('datauristring') !== ''
+			, true
+		)
+
+		pdf = jsPDF()
+
+		pdf.addPdfObj(pdfObj, 1, 1, 1, 1)
+
+		QUnit.equal(
+			removeMinorDiffs( pdf.output() )
+			, removeMinorDiffs( expectedtext )
+		)
+		QUnit.start()
+		//stop()
+	})
+})
+
 
 
 }) // end of document.ready(
