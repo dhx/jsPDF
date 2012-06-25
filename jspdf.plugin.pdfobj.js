@@ -26,33 +26,33 @@
 (function(jsPDFAPI) {
 'use strict'
 
-jsPDFAPI.pdfObj = function(objcode,x,y,scalex,scaley) {
+jsPDFAPI.addPdfObj = function(objcode,x,y,scalex,scaley) {
 	'use strict'
 
     var out = this.internal.write
     , f3 = function(number) { return number.toFixed(3); }
-    , k = this.internal.scaleFactor;
+    , k = this.internal.scaleFactor
+    , putStream = this.internal.putStream
+    , s = "";
 
-    out('q'); // Save current graphic state 
+    //this.internal.newObject();
 
-    out(      // first translate to x/y
-        '1 0 0 1' 
-      , f3(x*k)
-      , f3(y*k)
-      , 'cm'
-    );
-
-    out(      // then scale by scalex/scaley
-        f3(scalex)
-      , '0 0'
-      , f3(scaley)
-      , '0 0'
-    );
-
-    out(objcode);
-
-    out('Q'); // restore previous graphic state
+    s = (['q' // Save current graphic state 
+        
+      // first translate to x/y
+      , ([ 1, 0, 0, 1, x*k, y*k]).map(f3).concat(['cm']).join(' ')
     
+      // then scale by scalex/scaley
+      ,([ scalex, 0, 0, scaley, 0, 0 ]).map(f3).concat(['cm']).join(' ')
+
+      , objcode
+
+      , 'Q' // restore previous graphic state
+    ]).join("\n");
+
+
+    //out('/Length ' + s.length + ' >>');
+    out(s);
 
 	// it is good practice to return ref to jsPDF instance to make 
 	// the calls chainable. 
