@@ -406,6 +406,47 @@ asyncTest('016_addPdfObj', function() {
 	})
 })
 
+asyncTest('017_getCharWidth', function() {
+
+	//QUnit.stop()
+	require([]).then(function(){
+		QUnit.expect(3);
+
+		var pdf = jsPDF();
+
+        pdf.setFont('courier');
+
+		QUnit.equal(
+			// just testing if it does not blow up.
+			pdf.getCharWidth('a') !== 0
+			, true
+		);
+
+		pdf = jsPDF();
+
+        pdf.setFont('courier');
+
+		QUnit.equal(
+			pdf.getCharWidth('a')
+			, 9.6
+		);
+
+        pdf = jsPDF();
+
+        pdf.setFont('helvetica');
+
+        QUnit.equal(
+            pdf.getStringWidth("abcdefghijklmnopqrstuvwxyz").toFixed(3), "203.616"
+        );
+
+
+		QUnit.start();
+		//stop()
+	})
+})
+
+
+
 
 
 }) // end of document.ready(
