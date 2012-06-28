@@ -576,6 +576,15 @@ function jsPDF(/** String */ orientation, /** String */ unit, /** String */ form
 		}
 		return op;
 	}
+	, getFontSize = function(){
+		return fontSize;
+	}
+	, getFontName = function(){
+		return fontName;
+	}
+	, getFontType = function(){
+		return fontType;
+	}
 	
 
 	//---------------------------------------
@@ -589,6 +598,9 @@ function jsPDF(/** String */ orientation, /** String */ unit, /** String */ form
 		'pdfEscape': pdfEscape
 		, 'getStyle': getStyle
 		, 'getFont': getFont
+		, 'getFontSize': getFontSize
+		, 'getFontName': getFontName
+		, 'getFontType': getFontType
 		, 'btoa': btoa
 		, 'write': function(string1, string2, string3, etc){
 			out(
