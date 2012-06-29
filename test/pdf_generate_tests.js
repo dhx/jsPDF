@@ -372,7 +372,7 @@ asyncTest('016_addPdfObj', function() {
         columns = [
             {'title':'col1', 'value':'c1', 'align':'R', 'width':7, 'border':{'L':2, 'TRB':1}}
            ,{'title':'col2', 'value':'c2', 'align':'C', 'width':10, 'border':1}
-           ,{'title':'col3', 'value':'c3', 'align':'L', 'width':0, 'border':{'R':2, 'TLB':1}}
+           ,{'title':'col3', 'value':'c3', 'align':'L', 'width':20, 'border':{'R':2, 'TLB':1}}
         ];
 
         data = [
@@ -396,6 +396,8 @@ asyncTest('016_addPdfObj', function() {
 		pdf = jsPDF();
 
 		pdf.dataTable(columns,data,options);
+
+        pdf.output('datauri');
 
 		QUnit.equal(
 			removeMinorDiffs( pdf.output() )

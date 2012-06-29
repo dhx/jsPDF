@@ -23,16 +23,36 @@
  * ====================================================================
  */
 
+
+(function(jsPDFAPI) {
+
+    var pos = { x : 0, y : 0 };
+
+    jsPDFAPI.getX = function() { return pos.x; }
+
+    jsPDFAPI.setX = function(argx) { 
+        'use strict'
+        pos.x = argx>0 ? argx : this.internal.pageSize.width + argx; 
+        return this;
+    }
+
+    jsPDFAPI.getY = function() { return pos.y; }
+
+    jsPDFAPI.setY = function(argy) {
+        'use strict'
+        pos.y = argy>0 ? argy : this.internal.pageSize.width + argy;
+        return this;
+    }
+
+})(jsPDF.API);
+
+
 (function(jsPDFAPI) {
 'use strict'
 
-var  x=0
-   , y=0
-   , w
-   , h
-   , margin=28.35
-   , lMargin=0
-   , rMargin=0
+var  margin=28.35
+   , lMargin=margin/10
+   , rMargin=margin/10
    , cMargin=margin/10
    , lasth=8
    , rtl=false
@@ -41,44 +61,24 @@ var  x=0
  
 
 jsPDFAPI.ln = function(h) {
-    x = lMargin
+    this.setX(lMargin);
     if(isNaN(h)) {
-        y = y+lasth
+        this.setY( this.getY() + lasth );
     } else {
-        y = y+h
+        this.setY( this.getY() + this.internal.pageSize.height );
     }
-}
-
-jsPDFAPI.getX = function() { return x; }
-
-jsPDFAPI.setX = function(argx) { 
-	'use strict'
-    x = argx>0 ? argx : w+argx; 
-    return this;
-}
-
-jsPDFAPI.getY = function() { return y; }
-
-jsPDFAPI.setY = function(argy) {
-	'use strict'
-    y = argy>0 ? argy : h+argy;
-    return this;
 }
 
 
 // inspired by fpdf/tcpdf
 jsPDFAPI.cell = function(args) {
 	'use strict'
-    
-    var a = {}
-        , s = []
-        , k = this.internal.scaleFactor
-        , coord = this.internal.getCoordinateString
-        , vcoord = this.internal.getVerticalCoordinateString
-        , f2 = function(number) { return number.toFixed(2) };
 
-    a.w = args.w || 0;
-    a.h = args.h || 0;
+    var a = {}
+        , k = this.internal.scaleFactor;
+
+    a.width = args.width || 0;
+    a.height = args.height || 0;
     a.txt = args.txt || '';
     a.border = args.border || 0;
     a.ln = args.ln || 0;
@@ -86,13 +86,12 @@ jsPDFAPI.cell = function(args) {
     a.fill = args.fill || 0;
     a.link = args.link || '';
     a.stretch = args.stretch || 0;
-
     
-    if (a.w == 0) { // if the width is 0 we set the width to the rest of the page
+    if (a.width === 0) { // if the width is 0 we set the width to the rest of the page
         if(rtl) {
-            a.w = x - lMargin;
+            a.width = this.getX() - lMargin;
         } else {
-            a.w = w - rMargin - x;
+            a.width = this.internal.pageSize.width - rMargin - this.getX();
         }
     }
 
@@ -104,18 +103,18 @@ jsPDFAPI.cell = function(args) {
         if (a.border == 1) {
             style.push('D')
         }
-        var xk = x;
+        var xk = this.getX();
         if(rtl) {
-            xk = x - a.w;
+            xk = xk - a.width;
         }
-        this.rect(xk, y, a.w, a.h,style.join(''))
+        this.rect( xk, this.getY(), a.width, a.height, style.join('') )
     }
 
     if (a.border !== 0) {
 
         if (typeof(a.border) == "string") {
             a.border = {};
-            a[a.border] = 1;
+            a.border[a.border] = 1;
         }
 
         var bcn = '';
@@ -124,10 +123,10 @@ jsPDFAPI.cell = function(args) {
             this.setLineWidth(lineWidth/k * a.border[bcn]);
             for (bci in bcn) {
                 var cpos = ({'T':0,'R':1,'B':2,'L':3})[bci];
-                this.line(x+(((cpos+1)%4)>1?a.w:0)
-                        , y+(((cpos+0)%4)>1?a.h:0)
-                        , x+(((cpos+2)%4)>1?a.w:0)
-                        , y+(((cpos+1)%4)>1?a.h:0)
+                this.line(this.getX()+(((cpos+1)%4)>1?a.width:0)
+                        , this.getY()+(((cpos+0)%4)>1?a.height:0)
+                        , this.getX()+(((cpos+2)%4)>1?a.width:0)
+                        , this.getY()+(((cpos+1)%4)>1?a.height:0)
                 )
             }
         }
@@ -135,25 +134,28 @@ jsPDFAPI.cell = function(args) {
     }
 
     if ( a.txt && typeof(a.txt) == typeof(" ") && a.txt.length > 0 ) {
-        var width = this.getStringWidth(a.txt)
+        var width = this.getStringWidth(a.txt)/k
         // ratio between cell lenght and text lenght
-          , ratio = (a.w - (2 * cMargin/k)) / width
+          , ratio = (a.width - (2 * cMargin/k)) / width
           , txt = this.internal.pdfEscape(a.txt)
           , dx = (
             function(align) {
-                return align == 'C' && (a.w - width)/2
+                return align == 'C' && (a.width - width)/2
                     || align == 'L' && cMargin/k
-                    || align == 'R' && a.w - width - cMargin/k
+                    || align == 'R' && a.width - width - cMargin/k
                     || align == 'J' && cMargin/k
+                    || 0
             })(a.align);
 
         if (rtl) {
-            dx = a.w - width - dx;
+            dx = a.width - width - dx;
         }
 
-        this.text( x + dx , y + (a.h/2) + (.36 * this.internal.getFontSize()), txt );
+        console.log([this.getX(),dx,txt]);
+        this.text( this.getX() + dx , this.getY() + (a.height/2) + (.36 * this.internal.getFontSize()), txt );
 
     }
+    this.setX(this.getX() + a.width);
 
 	return this 
 }
@@ -162,17 +164,36 @@ jsPDFAPI.dataTable = function(columns, data, options) {
 
     var that = this;
 
+    options = options || {};
+    options = {
+        rowheight: options.rowheight || 6
+    }
+
     columns.forEach(function(col) {
-        var c = {txt:col.title};
+
+        col.h = options.rowheight;
+
+        function c() {this.txt = col.title};
         c.prototype = col;
-        that.cell(c);
+        that.cell(new c());
     });
+    that.ln();
 
     data.forEach(function(row) {
         columns.forEach(function(col) {
-            var c = {};
+            var c = function() {};
+            c.prototype = col;
+        
+            var ci = new c();
 
+
+            if ( 'value' in col ) {
+                ci.txt = row[col.value] || ci.txt || '';
+            }
+
+            that.cell(ci);
         });
+        that.ln();
     });
 
 }
