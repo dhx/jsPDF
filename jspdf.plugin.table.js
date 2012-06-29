@@ -30,8 +30,10 @@ var  x=0
    , y=0
    , w
    , h
+   , margin=28.35
    , lMargin=0
    , rMargin=0
+   , cMargin=margin/10
    , lasth=8
    , rtl=false
    , lineWidth=0.57
@@ -130,6 +132,27 @@ jsPDFAPI.cell = function(args) {
             }
         }
         this.setLineWidth(lineWidth/k);
+    }
+
+    if ( a.txt && typeof(a.txt) == typeof(" ") && a.txt.length > 0 ) {
+        var width = this.getStringWidth(a.txt)
+        // ratio between cell lenght and text lenght
+          , ratio = (a.w - (2 * cMargin/k)) / width
+          , txt = this.internal.pdfEscape(a.txt)
+          , dx = (
+            function(align) {
+                return align == 'C' && (a.w - width)/2
+                    || align == 'L' && cMargin/k
+                    || align == 'R' && a.w - width - cMargin/k
+                    || align == 'J' && cMargin/k
+            })(a.align);
+
+        if (rtl) {
+            dx = a.w - width - dx;
+        }
+
+        this.text( x + dx , y + (a.h/2) + (.36 * this.internal.getFontSize()), txt );
+
     }
 
 	return this 
