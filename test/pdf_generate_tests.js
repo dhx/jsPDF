@@ -370,9 +370,9 @@ asyncTest('016_addPdfObj', function() {
 		QUnit.expect(2);
 
         columns = [
-            {'title':'col1', 'value':'c1', 'align':'R', 'width':7, 'border':{'L':2, 'TRB':1}}
-           ,{'title':'col2', 'value':'c2', 'align':'C', 'width':10, 'border':1}
-           ,{'title':'col3', 'value':'c3', 'align':'L', 'width':20, 'border':{'R':2, 'TLB':1}}
+            {'title':'col1', 'value':'c1', 'align':'R', 'width':14, 'border':{'L':2, 'TRB':1}}
+           ,{'title':'col2', 'value':'c2', 'align':'C', 'width':20, 'border':1}
+           ,{'title':'col3', 'value':'c3', 'align':'L', 'width':40, 'border':{'R':2, 'TLB':1}}
         ];
 
         data = [
