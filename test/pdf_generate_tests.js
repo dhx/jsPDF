@@ -363,11 +363,42 @@ asyncTest('014_addImage', function() {
 	})
 })
 
-asyncTest('015_addPdfObj', function() {
+
+
+
+// handcrafted tests
+asyncTest('015_splittext', function() {
 
 	//QUnit.stop()
 	require(
-		['text!015_addPdfObj.pdfobj', 'text!015_addPdfObj.pdf']
+		['015_splittext', 'text!015_splittext.pdf']
+	).then(function(runner, shouldbe){
+		QUnit.expect(1)
+
+		var pdf = runner(jsPDF)
+
+		var output = pdf.output()
+		if (dump) {
+			displayInTextArea(output, '015_splittext')
+			QUnit.equal(true, true)
+
+		} else {
+			QUnit.equal(
+				removeMinorDiffs( output )
+				, removeMinorDiffs( shouldbe )
+			)
+		}
+		QUnit.start()
+		//stop()
+	})
+})
+
+
+asyncTest('016_addPdfObj', function() {
+
+	//QUnit.stop()
+	require(
+		['text!016_addPdfObj.pdfobj', 'text!016_addPdfObj.pdf']
 	).then(function(pdfObj, expectedtext){
 		QUnit.expect(2)
 
@@ -394,11 +425,11 @@ asyncTest('015_addPdfObj', function() {
 	})
 })
 
-asyncTest('016_addPdfObj', function() {
+asyncTest('017_table', function() {
 
 	//QUnit.stop()
 	require(
-		['text!016_table.pdf']
+		['text!017_table.pdf']
 	).then(function(expectedtext){
 		QUnit.expect(2);
 
@@ -409,8 +440,8 @@ asyncTest('016_addPdfObj', function() {
         ];
 
         data = [
-             {c1:"ABC", c2:"DEF", c3:"GHI"}
-            ,{c1:"JKL", c2:"MNO", c3:"PQR"}
+             {c1:"A(B)C", c2:"DEF", c3:"GHI"}
+            ,{c1:"J'\\'KL", c2:"MNO", c3:"PQR"}
             ,{c1:"STU", c2:"VWX", c3:"YZ_"}   
         ];
 
@@ -441,7 +472,7 @@ asyncTest('016_addPdfObj', function() {
 	})
 })
 
-asyncTest('017_getCharWidth', function() {
+asyncTest('018_getCharWidth', function() {
 
 	//QUnit.stop()
 	require([]).then(function(){
@@ -453,7 +484,7 @@ asyncTest('017_getCharWidth', function() {
 
 		QUnit.equal(
 			// just testing if it does not blow up.
-			pdf.getCharWidth('a') !== 0
+			pdf.getStringUnitWidth('a') !== 0
 			, true
 		);
 
@@ -462,7 +493,7 @@ asyncTest('017_getCharWidth', function() {
         pdf.setFont('courier');
 
 		QUnit.equal(
-			pdf.getCharWidth('a')
+            pdf.getStringUnitWidth('a') * 16
 			, 9.6
 		);
 
@@ -471,41 +502,11 @@ asyncTest('017_getCharWidth', function() {
         pdf.setFont('helvetica');
 
         QUnit.equal(
-            pdf.getStringWidth("abcdefghijklmnopqrstuvwxyz").toFixed(3), "203.616"
+            (pdf.getStringUnitWidth("abcdefghijklmnopqrstuvwxyz")*16).toFixed(3), "202.400"
         );
 
 
 		QUnit.start();
-		//stop()
-	})
-})
-
-
-
-
-// handcrafted tests
-asyncTest('015_splittext', function() {
-
-	//QUnit.stop()
-	require(
-		['015_splittext', 'text!015_splittext.pdf']
-	).then(function(runner, shouldbe){
-		QUnit.expect(1)
-
-		var pdf = runner(jsPDF)
-
-		var output = pdf.output()
-		if (dump) {
-			displayInTextArea(output, '015_splittext')
-			QUnit.equal(true, true)
-
-		} else {
-			QUnit.equal(
-				removeMinorDiffs( output )
-				, removeMinorDiffs( shouldbe )
-			)
-		}
-		QUnit.start()
 		//stop()
 	})
 })
