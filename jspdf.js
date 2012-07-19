@@ -821,12 +821,6 @@ function jsPDF(/** String */ orientation, /** String */ unit, /** String */ form
 		}
 		return op;
 	}
-	, getFontName = function(){
-		return fontName;
-	}
-	, getFontType = function(){
-		return fontType;
-	}
 	
 
 	//---------------------------------------
@@ -839,8 +833,6 @@ function jsPDF(/** String */ orientation, /** String */ unit, /** String */ form
 	API.internal = {
 		'pdfEscape': pdfEscape
 		, 'getStyle': getStyle
-		, 'getFontName': getFontName
-		, 'getFontType': getFontType
 		/**
 		Returns {FontObject} describing a particular font.
 		@public
