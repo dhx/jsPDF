@@ -86,6 +86,7 @@ jsPDFAPI.cell = function(args) {
     a.fill = args.fill || 0;
     a.link = args.link || '';
     a.stretch = args.stretch || 0;
+    a.fontSize = args.fontSize || this.internal.getFontSize();
     
     if (a.width === 0) { // if the width is 0 we set the width to the rest of the page
         if(rtl) {
@@ -134,10 +135,9 @@ jsPDFAPI.cell = function(args) {
     }
 
     if ( a.txt && typeof(a.txt) == typeof(" ") && a.txt.length > 0 ) {
-        var width = this.getStringWidth(a.txt)/k
+        var width = a.fontSize * this.getStringUnitWidth(a.txt) / k
         // ratio between cell lenght and text lenght
           , ratio = (a.width - (2 * cMargin/k)) / width
-          , txt = this.internal.pdfEscape(a.txt)
           , dx = (
             function(align) {
                 return align == 'C' && (a.width - width)/2
@@ -151,8 +151,8 @@ jsPDFAPI.cell = function(args) {
             dx = a.width - width - dx;
         }
 
-        console.log([this.getX(),dx,txt]);
-        this.text( this.getX() + dx , this.getY() + (a.height/2) + (.36 * this.internal.getFontSize()), txt );
+        console.log([this.getX(),dx,a.txt]);
+        this.text( this.getX() + dx , this.getY() + (a.height/2) + (.36 * this.internal.getFontSize()), a.txt );
 
     }
     this.setX(this.getX() + a.width);

@@ -821,9 +821,6 @@ function jsPDF(/** String */ orientation, /** String */ unit, /** String */ form
 		}
 		return op;
 	}
-	, getFontSize = function(){
-		return fontSize;
-	}
 	, getFontName = function(){
 		return fontName;
 	}

@@ -461,7 +461,7 @@ asyncTest('017_table', function() {
 
 		pdf.dataTable(columns,data,options);
 
-        pdf.output('datauri');
+        //pdf.output('datauri');
 
 		QUnit.equal(
 			removeMinorDiffs( pdf.output() )
