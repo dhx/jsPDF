@@ -24,51 +24,15 @@
  */
 
 
-(function(jsPDFAPI) {
-
-    var pos = { x : 0, y : 0 };
-
-    jsPDFAPI.getX = function() { return pos.x; }
-
-    jsPDFAPI.setX = function(argx) { 
-        'use strict'
-        pos.x = argx>0 ? argx : this.internal.pageSize.width + argx; 
-        return this;
-    }
-
-    jsPDFAPI.getY = function() { return pos.y; }
-
-    jsPDFAPI.setY = function(argy) {
-        'use strict'
-        pos.y = argy>0 ? argy : this.internal.pageSize.width + argy;
-        return this;
-    }
-
-})(jsPDF.API);
-
 
 (function(jsPDFAPI) {
 'use strict'
 
-var  margin=28.35
-   , lMargin=margin/10
-   , rMargin=margin/10
-   , cMargin=margin/10
-   , lasth=8
-   , rtl=false
+var  rtl=false
+   , cellMargin=2.835
    , lineWidth=0.57
    , rowHeight=6;
  
-
-jsPDFAPI.ln = function(h) {
-    this.setX(lMargin);
-    if(isNaN(h)) {
-        this.setY( this.getY() + lasth );
-    } else {
-        this.setY( this.getY() + this.internal.pageSize.height );
-    }
-}
-
 
 // inspired by fpdf/tcpdf
 jsPDFAPI.cell = function(args) {
@@ -137,13 +101,13 @@ jsPDFAPI.cell = function(args) {
     if ( a.txt && typeof(a.txt) == typeof(" ") && a.txt.length > 0 ) {
         var width = a.fontSize * this.getStringUnitWidth(a.txt) / k
         // ratio between cell lenght and text lenght
-          , ratio = (a.width - (2 * cMargin/k)) / width
+          , ratio = (a.width - (2 * cellMargin/k)) / width
           , dx = (
             function(align) {
                 return align == 'C' && (a.width - width)/2
-                    || align == 'L' && cMargin/k
-                    || align == 'R' && a.width - width - cMargin/k
-                    || align == 'J' && cMargin/k
+                    || align == 'L' && cellMargin/k
+                    || align == 'R' && a.width - width - cellMargin/k
+                    || align == 'J' && cellMargin/k
                     || 0
             })(a.align);
 
