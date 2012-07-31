@@ -129,9 +129,8 @@ jsPDFAPI.dataTable = function(columns, data, options) {
     var that = this;
 
     options = options || {};
-    options = {
-        rowheight: options.rowheight || 6
-    }
+    options.rowheight = options.rowheight || 8;
+    
 
     columns.forEach(function(col) {
 
@@ -157,7 +156,7 @@ jsPDFAPI.dataTable = function(columns, data, options) {
 
             that.cell(ci);
         });
-        that.ln();
+        that.ln(options.rowheight);
     });
 
 }
