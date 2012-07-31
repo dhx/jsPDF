@@ -16,8 +16,11 @@ def minifyfiles(context):
         ).replace(
             "${commitID}", getCommitIDstring()
         ) + 
+        (src - '.js' + '.plugin.pdfobj.js').text +
+        (src - '.js' + '.plugin.relative_position.js').text +
         (src - '.js' + '.plugin.standard_fonts_metrics.js').text +
         (src - '.js' + '.plugin.split_text_to_size.js').text + 
+        (src - '.js' + '.plugin.table.js').text +
         (src - '.js' + '.plugin.addimage.js').text
     )
         
